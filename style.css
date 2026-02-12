@@ -17,7 +17,7 @@ body {
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 header {
@@ -47,7 +47,8 @@ main {
     margin-bottom: 16px;
 }
 
-.control-btn, .mode-btn {
+.control-btn,
+.mode-btn {
     width: 100%;
     padding: 12px;
     font-size: 1rem;
@@ -58,11 +59,14 @@ main {
 }
 
 .control-btn {
-    background-color: #6c757d;
-    color: white;
+    background-color: #e9ecef;
+    color: #495057;
 }
+
 .control-btn.active {
-    background-color: #007bff; /* 青色に変更 */
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
 }
 
 .mode-selector {
@@ -130,7 +134,7 @@ main {
 #scanner-message {
     position: absolute;
     color: white;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     padding: 8px 16px;
     border-radius: 8px;
 }
@@ -146,9 +150,11 @@ main {
     opacity: 0;
     transition: opacity 0.1s;
 }
+
 #scanner-overlay.flash {
     opacity: 1;
 }
+
 .hidden {
     display: none;
 }
