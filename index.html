@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlamoScanner PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#333333">
+</head>
+<body>
+    <div id="app-container">
+        <header>
+            <h1>PlamoScanner</h1>
+        </header>
+        
+        <main>
+            <div id="controls">
+                <button id="shimau-btn" class="control-btn">箱にしまう</button>
+                <div class="mode-selector">
+                    <button id="hukuro-scan-btn" class="mode-btn active">袋スキャン</button>
+                    <button id="hako-scan-btn" class="mode-btn">箱スキャン</button>
+                </div>
+            </div>
+
+            <div id="status-card">
+                <p id="status-message">ボタンを押してスキャン開始</p>
+                <p id="scanned-id-display">ID: -</p>
+            </div>
+
+            <div id="scanner-container">
+                <div id="qr-reader"></div>
+                <div id="scanner-overlay" class="hidden">
+                    <div class="flash"></div>
+                </div>
+                <div id="scanner-message">
+                    <p>カメラを起動してスキャン</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>PWA Version</p>
+        </footer>
+    </div>
+
+    <!-- QR Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

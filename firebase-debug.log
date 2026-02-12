@@ -1,0 +1,203 @@
+[debug] [2026-02-12T08:12:02.868Z] ----------------------------------------------------------------------
+[debug] [2026-02-12T08:12:02.872Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2026-02-12T08:12:02.872Z] CLI Version:   15.5.1
+[debug] [2026-02-12T08:12:02.872Z] Platform:      win32
+[debug] [2026-02-12T08:12:02.872Z] Node Version:  v24.11.1
+[debug] [2026-02-12T08:12:02.872Z] Time:          Thu Feb 12 2026 17:12:02 GMT+0900 (日本標準時)
+[debug] [2026-02-12T08:12:02.873Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\hide\AndroidStudioProjects\PlamoScannerPWA
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2026-02-12T08:12:38.926Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-12T08:12:38.927Z] > authorizing via signed-in user (unafig@gmail.com)
+[debug] [2026-02-12T08:13:48.653Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:13:48.653Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:13:48.656Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-02-12T08:13:48.656Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"PlamoScanner"}
+[debug] [2026-02-12T08:13:49.071Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-02-12T08:13:49.071Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_NOT_VALID","suggestedProjectId":"plamoscanner"}
+[debug] [2026-02-12T08:14:09.453Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:14:09.453Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:14:09.455Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-02-12T08:14:09.455Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"plamo_scanner"}
+[debug] [2026-02-12T08:14:09.606Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 400
+[debug] [2026-02-12T08:14:09.607Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}}
+[debug] [2026-02-12T08:14:09.609Z] Couldn't check if project ID plamo_scanner is available. Original error: FirebaseError: Failed to check if project ID is available. See firebase-debug.log for more info.
+[debug] [2026-02-12T08:14:24.760Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:14:24.762Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:14:24.762Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-02-12T08:14:24.762Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"plamo_scanner","name":"plamo_scanner"}
+[debug] [2026-02-12T08:14:25.510Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 400
+[debug] [2026-02-12T08:14:25.511Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.rpc.BadRequest","fieldViolations":[{"field":"project_id","description":"project_id contains invalid characters"},{"field":"display_name","description":"project display name contains invalid characters"}]},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"url":"https://cloud.google.com/resource-manager/reference/rest/v1/projects"}]}]}}
+[debug] [2026-02-12T08:14:25.662Z] FirebaseError: Request to https://cloudresourcemanager.googleapis.com/v1/projects had HTTP Error: 400, Request contains an invalid argument.
+    at responseToError (C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:330:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[error] 
+[error] Error: Failed to create project. See firebase-debug.log for more info.
+[debug] [2026-02-12T08:16:34.012Z] ----------------------------------------------------------------------
+[debug] [2026-02-12T08:16:34.016Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2026-02-12T08:16:34.017Z] CLI Version:   15.5.1
+[debug] [2026-02-12T08:16:34.017Z] Platform:      win32
+[debug] [2026-02-12T08:16:34.017Z] Node Version:  v24.11.1
+[debug] [2026-02-12T08:16:34.018Z] Time:          Thu Feb 12 2026 17:16:34 GMT+0900 (日本標準時)
+[debug] [2026-02-12T08:16:34.018Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\hide\AndroidStudioProjects\PlamoScannerPWA
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2026-02-12T08:16:42.702Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-12T08:16:42.703Z] > authorizing via signed-in user (unafig@gmail.com)
+[debug] [2026-02-12T08:16:59.021Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:16:59.021Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:16:59.024Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-02-12T08:16:59.025Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"plamo-scanner"}
+[debug] [2026-02-12T08:16:59.468Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-02-12T08:16:59.468Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_AVAILABLE","suggestedProjectId":"plamo-scanner"}
+[debug] [2026-02-12T08:17:00.788Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:00.788Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:00.788Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-02-12T08:17:00.788Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"plamo-scanner","name":"plamo-scanner"}
+[debug] [2026-02-12T08:17:01.792Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2026-02-12T08:17:01.792Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/create_project.global.8355397125968561293"}
+[debug] [2026-02-12T08:17:01.794Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:01.794Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:01.794Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 [none]
+[debug] [2026-02-12T08:17:02.473Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 200
+[debug] [2026-02-12T08:17:02.473Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 {"name":"operations/create_project.global.8355397125968561293"}
+[debug] [2026-02-12T08:17:02.981Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-02-12T08:17:02.982Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:02.982Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:02.982Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 [none]
+[debug] [2026-02-12T08:17:03.190Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 200
+[debug] [2026-02-12T08:17:03.190Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 {"name":"operations/create_project.global.8355397125968561293"}
+[debug] [2026-02-12T08:17:04.198Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-02-12T08:17:04.199Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:04.199Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:04.199Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 [none]
+[debug] [2026-02-12T08:17:04.386Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 200
+[debug] [2026-02-12T08:17:04.386Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8355397125968561293 {"name":"operations/create_project.global.8355397125968561293","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","gettable":true,"ready":true},"done":true,"response":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.Project","projectNumber":"591609408294","projectId":"plamo-scanner","lifecycleState":"ACTIVE","name":"plamo-scanner","createTime":"2026-02-12T08:17:18.657513Z"}}
+[debug] [2026-02-12T08:17:04.388Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:04.388Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:04.389Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/plamo-scanner:addFirebase [none]
+[debug] [2026-02-12T08:17:05.489Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/plamo-scanner:addFirebase 403
+[debug] [2026-02-12T08:17:05.489Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/plamo-scanner:addFirebase {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-02-12T08:17:05.491Z] Request to https://firebase.googleapis.com/v1beta1/projects/plamo-scanner:addFirebase had HTTP Error: 403, The caller does not have permission
+[debug] [2026-02-12T08:17:05.614Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/plamo-scanner:addFirebase had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:330:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[error] 
+[error] Error: Failed to add Firebase to Google Cloud Platform project. See firebase-debug.log for more info.
+[debug] [2026-02-12T08:17:19.404Z] ----------------------------------------------------------------------
+[debug] [2026-02-12T08:17:19.413Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2026-02-12T08:17:19.414Z] CLI Version:   15.5.1
+[debug] [2026-02-12T08:17:19.414Z] Platform:      win32
+[debug] [2026-02-12T08:17:19.414Z] Node Version:  v24.11.1
+[debug] [2026-02-12T08:17:19.414Z] Time:          Thu Feb 12 2026 17:17:19 GMT+0900 (日本標準時)
+[debug] [2026-02-12T08:17:19.415Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\hide\AndroidStudioProjects\PlamoScannerPWA
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2026-02-12T08:17:27.077Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-12T08:17:27.077Z] > authorizing via signed-in user (unafig@gmail.com)
+[debug] [2026-02-12T08:17:36.300Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:36.300Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:36.303Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-02-12T08:17:36.303Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"plamoscanner"}
+[debug] [2026-02-12T08:17:36.770Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-02-12T08:17:36.770Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_AVAILABLE","suggestedProjectId":"plamoscanner"}
+[debug] [2026-02-12T08:17:37.941Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:37.941Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:37.941Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-02-12T08:17:37.941Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"plamoscanner","name":"plamoscanner"}
+[debug] [2026-02-12T08:17:38.763Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2026-02-12T08:17:38.763Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/create_project.global.8163330832715837359"}
+[debug] [2026-02-12T08:17:38.764Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:38.764Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:38.765Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 [none]
+[debug] [2026-02-12T08:17:39.409Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 200
+[debug] [2026-02-12T08:17:39.409Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 {"name":"operations/create_project.global.8163330832715837359"}
+[debug] [2026-02-12T08:17:39.918Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-02-12T08:17:39.919Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:39.919Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:39.920Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 [none]
+[debug] [2026-02-12T08:17:40.099Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 200
+[debug] [2026-02-12T08:17:40.099Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 {"name":"operations/create_project.global.8163330832715837359"}
+[debug] [2026-02-12T08:17:41.112Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-02-12T08:17:41.112Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:41.112Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:41.113Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 [none]
+[debug] [2026-02-12T08:17:41.305Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 200
+[debug] [2026-02-12T08:17:41.305Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8163330832715837359 {"name":"operations/create_project.global.8163330832715837359","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","gettable":true,"ready":true},"done":true,"response":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.Project","projectNumber":"726694136622","projectId":"plamoscanner","lifecycleState":"ACTIVE","name":"plamoscanner","createTime":"2026-02-12T08:17:55.532815Z"}}
+[debug] [2026-02-12T08:17:41.307Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:41.307Z] Checked if tokens are valid: true, expires at: 1770887497494
+[debug] [2026-02-12T08:17:41.307Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/plamoscanner:addFirebase [none]
+[debug] [2026-02-12T08:17:42.383Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/plamoscanner:addFirebase 403
+[debug] [2026-02-12T08:17:42.383Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/plamoscanner:addFirebase {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-02-12T08:17:42.384Z] Request to https://firebase.googleapis.com/v1beta1/projects/plamoscanner:addFirebase had HTTP Error: 403, The caller does not have permission
+[debug] [2026-02-12T08:17:42.507Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/plamoscanner:addFirebase had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\hide\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:330:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[error] 
+[error] Error: Failed to add Firebase to Google Cloud Platform project. See firebase-debug.log for more info.

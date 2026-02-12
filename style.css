@@ -1,0 +1,163 @@
+/* 基本設定 */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#app-container {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+header {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+main {
+    flex-grow: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 操作ボタン */
+#controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.control-btn, .mode-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.control-btn {
+    background-color: #6c757d;
+    color: white;
+}
+.control-btn.active {
+    background-color: #007bff; /* 青色に変更 */
+}
+
+.mode-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.mode-btn {
+    flex-grow: 1;
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.mode-btn.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+
+/* ステータス表示 */
+#status-card {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#status-message {
+    margin: 0 0 4px 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+#scanned-id-display {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* スキャナエリア */
+#scanner-container {
+    flex-grow: 1;
+    background-color: #000;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#qr-reader {
+    width: 100%;
+    height: 100%;
+}
+
+#scanner-message {
+    position: absolute;
+    color: white;
+    background-color: rgba(0,0,0,0.5);
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+/* スキャン時のエフェクト */
+#scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+#scanner-overlay.flash {
+    opacity: 1;
+}
+.hidden {
+    display: none;
+}
+
+
+footer {
+    text-align: center;
+    padding: 8px;
+    font-size: 0.8rem;
+    color: #6c757d;
+    border-top: 1px solid #e0e0e0;
+}
