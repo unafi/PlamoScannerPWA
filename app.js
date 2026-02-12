@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 mode: 'cors', // CORS対応
                 headers: {
-                    'Content-Type': 'text/plain;charset=utf-t', // GASでリダイレクトする場合
+                    'Content-Type': 'text/plain;charset=utf-8', // GASでリダイレクトする場合
                 },
                 body: JSON.stringify(requestBody)
             });
