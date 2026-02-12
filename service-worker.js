@@ -1,12 +1,13 @@
-const CACHE_NAME = 'plamoscanner-pwa-cache-v1';
+const CACHE_NAME = 'plamoscanner-pwa-dev-network-first-v1';
 const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
-  '/app.js'
-  // アイコンもキャッシュする場合はここに追加
-  // '/icons/icon-192x192.png',
-  // '/icons/icon-512x512.png'
+  '/app.js',
+  '/html5-qrcode.min.js', // ローカル化したライブラリ
+  '/manifest.json',      // マニフェストファイル
+  '/icons/icon-192x192.png', // アイコン
+  '/icons/icon-512x512.png'  // アイコン
 ];
 
 self.addEventListener('install', event => {
@@ -21,17 +22,22 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // キャッシュがあればそれを返す
-        if (response) {
-          return response;
-        }
-
-        // キャッシュがなければネットワークから取得
-        return fetch(event.request);
-      }
-    )
+        // ネットワークから取得成功した場合
+        // レスポンスのコピーをキャッシュに保存し、レスポンスを返す
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME)
+          .then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+        return response;
+      })
+      .catch(() => {
+        // ネットワークからの取得に失敗した場合（オフラインなど）
+        // キャッシュからリソースを返す
+        return caches.match(event.request);
+      })
   );
 });
 
