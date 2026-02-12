@@ -130,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log(`Code matched = ${decodedText}`, decodedResult);
         scannedIdEl.textContent = `ID: ${decodedText}`;
+        playBeep(); // ビープ音を鳴らす
         
         // フラッシュエフェクト
         scannerOverlay.classList.remove('hidden');
@@ -150,6 +151,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const onScanFailure = (error) => {
         // スキャン失敗時は特に何もしない
+    };
+
+    // ビープ音を鳴らす関数 (Web Audio API)
+    const playBeep = () => {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.type = 'square'; // 'sine' (正弦波) だと優しすぎるので 'square' (矩形波) か 'sawtooth' (ノコギリ波) で電子音っぽく
+            osc.frequency.value = 1200; // 周波数 (Hz) - 高めの音
+            
+            // 音量制御 (フェードアウトしてプチッというノイズを防ぐ)
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.1);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1); // 0.1秒だけ鳴らす
+        } catch (e) {
+            console.error('Beep error:', e);
+        }
     };
 
     // --- バックエンド連携 ---
