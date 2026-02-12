@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwwM7vjgaEwahY7nDEKKdeCrIkoUgu-YY5bjfk-7lOY2k-lv7DU76lVe3sj-l6ZLx14sg/exec'; //【要設定】Google Apps ScriptのデプロイURL
 
     // --- 状態管理 ---
-    let currentMode = 'HUKURO_SCAN'; // HUKURO_SCAN, HAKO_SCAN, SHIMAU_STEP1_HAKO, SHIMAU_STEP2_HUKURO
+    let currentMode = ''; // HUKURO_SCAN, HAKO_SCAN, SHIMAU_STEP1_HAKO, SHIMAU_STEP2_HUKURO
     let selectedHakoInfo = null; // { id: '...', name: '...' }
     let isScanning = false;
     let lockScan = false;
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Code matched = ${decodedText}`, decodedResult);
         scannedIdEl.textContent = `ID: ${decodedText}`;
         playBeep(); // ビープ音を鳴らす
-        
+
         // フラッシュエフェクト
         scannerOverlay.classList.remove('hidden');
         scannerOverlay.classList.add('flash');
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             osc.type = 'square'; // 'sine' (正弦波) だと優しすぎるので 'square' (矩形波) か 'sawtooth' (ノコギリ波) で電子音っぽく
             osc.frequency.value = 1200; // 周波数 (Hz) - 高めの音
-            
+
             // 音量制御 (フェードアウトしてプチッというノイズを防ぐ)
             gain.gain.setValueAtTime(0.1, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.1);
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(requestBody)
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Server returned ${response.status}`);
             }
@@ -219,12 +219,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateUI();
                 startScanner(); // 次のスキャンを促す
             } else {
-                 // Notionアプリを開く
+                // Notionアプリを開く
                 if (result.notionUrl) {
                     window.location.href = result.notionUrl;
                 }
                 // 完了後、デフォルトモードに戻る
-                currentMode = 'HUKURO_SCAN';
+                currentMode = '';
                 updateUI();
             }
 
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessageEl.textContent = `エラー: ${err.message}`;
         }
     };
-    
+
     // 初期UI設定
     updateUI();
 });
