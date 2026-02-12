@@ -60,6 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // UIを初期状態（スキャン前）に戻す関数
+    function resetUI() {
+        currentMode = '';
+        hukuroScanBtn.classList.remove('active');
+        hakoScanBtn.classList.remove('active');
+        shimauBtn.classList.remove('active');
+        statusMessageEl.textContent = 'ボタンを押してスキャンを開始してください';
+    }
+
     // --- スキャナ制御 ---
     const startScanner = async () => {
         if (isScanning) return;
@@ -224,8 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = result.notionUrl;
                 }
                 // 完了後、デフォルトモードに戻る
-                currentMode = '';
-                updateUI();
+                resetUI();
             }
 
         } catch (err) {
@@ -235,5 +243,5 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // 初期UI設定
-    updateUI();
+    resetUI();
 });
