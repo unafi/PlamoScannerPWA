@@ -3,8 +3,7 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/style.css',
-  '/app.js',
-  'https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js'
+  '/app.js'
   // アイコンもキャッシュする場合はここに追加
   // '/icons/icon-192x192.png',
   // '/icons/icon-512x512.png'
