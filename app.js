@@ -221,9 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
+
         const ctx = canvas.getContext('2d');
+
         // 画像の中心を基準に描画するために、Canvasの中心に原点を移動
         ctx.translate(size / 2, size / 2);
+
         // videoのサイズ比率を計算（アスペクト比維持のため）
         // オブジェクトフィット: cover の挙動をCanvasで模倣します
         const scale = Math.max(size / videoEl.videoWidth, size / videoEl.videoHeight);
@@ -233,7 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const h = videoEl.videoHeight * scale;
 
         // 中心位置に描画
+        // drawImage(image, dx, dy, dWidth, dHeight)
+        // ここでは原点が中心にあるので、描画位置は -w/2, -h/2 となる
         ctx.drawImage(videoEl, -w / 2, -h / 2, w, h);
+
         scanImage = canvas.toDataURL('image/jpeg', 0.8);
         previewImg.src = scanImage;
         capturedPreview.classList.remove('hidden');
