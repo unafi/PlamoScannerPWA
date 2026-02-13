@@ -9,21 +9,21 @@
 
 ```mermaid
 graph TD
-    User[ユーザー] -->|アクセス| PWA[Firebase Hosting (PWA)]
-    User -->|1. カメラ許可 & スキャン| PWA
-    PWA -->|2. QRコード読取 (ID)| PWA_JS[app.js]
-    PWA_JS -->|3. POST (ID, Mode)| GAS[Google Apps Script]
+    User[ユーザー] -- "アクセス" --> PWA["Firebase Hosting (PWA)"]
+    User -- "1. カメラ許可 & スキャン" --> PWA
+    PWA -- "2. QRコード読取 (ID)" --> PWA_JS[app.js]
+    PWA_JS -- "3. POST (ID, Mode)" --> GAS[Google Apps Script]
     
     subgraph "Backend Logic (GAS)"
-        GAS -->|4. API Call| NotionAPI[Notion API]
-        NotionAPI -->|5. SELECT / INSERT / UPDATE| NotionDB[(Notion Database)]
-        NotionDB -->|6. 結果返却 (Page URL / ID)| NotionAPI
-        NotionAPI -->|7. JSON| GAS
+        GAS -- "4. API Call" --> NotionAPI[Notion API]
+        NotionAPI -- "5. SELECT / INSERT / UPDATE" --> NotionDB[("Notion Database")]
+        NotionDB -- "6. 結果返却 (Page URL / ID)" --> NotionAPI
+        NotionAPI -- "7. JSON" --> GAS
     end
     
-    GAS -->|8. Response (notion:// URL)| PWA_JS
-    PWA_JS -->|9. Redirect| NotionApp[Notionアプリ]
-    NotionApp -->|10. 該当ページ表示| User
+    GAS -- "8. Response (notion:// URL)" --> PWA_JS
+    PWA_JS -- "9. Redirect" --> NotionApp[Notionアプリ]
+    NotionApp -- "10. 該当ページ表示" --> User
 ```
 
 ## 2. デプロイメントフロー
