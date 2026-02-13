@@ -199,7 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const capturedPreview = document.getElementById('captured-preview');
     const previewImg = document.getElementById('preview-img');
     const uploadTestBtn = document.getElementById('upload-test-btn');
-    let capturedImageBlob = null; // Base64 string
 
     // 撮影ボタン
     shutterBtn.addEventListener('click', () => {
@@ -229,8 +228,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
 
-        capturedImageBlob = canvas.toDataURL('image/jpeg', 0.8);
-        previewImg.src = capturedImageBlob;
+
+        scanImage = canvas.toDataURL('image/jpeg', 0.8);
+        previewImg.src = scanImage;
         capturedPreview.classList.remove('hidden');
 
         shutterBtn.textContent = '保存しました！';
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // アップロードテストボタン (Step 1検証用)
     uploadTestBtn.addEventListener('click', async () => {
-        if (!capturedImageBlob) return;
+        if (!scanImage) return;
         statusMessageEl.textContent = 'アップロードテスト中...';
 
         try {
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     mode: 'UPLOAD_ONLY',
-                    image: capturedImageBlob
+                    image: scanImage
                 })
             });
 
@@ -279,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hakoPageId: selectedHakoInfo?.pageId || null,
             image: scanImage
         };
+        scanImage = null;
 
         try {
             const response = await fetch(GAS_WEB_APP_URL, {
