@@ -116,7 +116,10 @@ main {
 
 /* スキャナエリア */
 #scanner-container {
-    flex-grow: 1;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
     background-color: #000;
     border-radius: 8px;
     position: relative;
@@ -129,6 +132,7 @@ main {
 #qr-reader {
     width: 100%;
     height: 100%;
+    object-fit: cover;
 }
 
 #scanner-message {

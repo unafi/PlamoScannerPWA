@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await html5QrCode.start(
-                { facingMode: "environment" }, //背面カメラ
+                { facingMode: "environment", aspectRatio: 1.0 }, //背面カメラ・正方形比率推奨
                 {
                     fps: 10,
                     qrbox: (viewfinderWidth, viewfinderHeight) => {
