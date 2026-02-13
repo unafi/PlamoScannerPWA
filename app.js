@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedHakoInfo = null; // { id: '...', name: '...' }
     let isScanning = false;
     let lockScan = false;
+    let scanImage = null;
 
     // --- DOM要素 ---
     const hukuroScanBtn = document.getElementById('hukuro-scan-btn');
@@ -275,7 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const requestBody = {
             mode: currentMode,
             id: id,
-            hakoPageId: selectedHakoInfo?.pageId || null
+            hakoPageId: selectedHakoInfo?.pageId || null,
+            image: scanImage
         };
 
         try {

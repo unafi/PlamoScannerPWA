@@ -123,16 +123,16 @@ function doPost(e) {
         result = { message: 'Image uploaded successfully', imageUrl: imageUrl };
         break;
       case 'HUKURO_SCAN':
-        result = processHukuro(id);
+        result = processHukuro(id, image);
         break;
       case 'HAKO_SCAN':
-        result = processHako(id);
+        result = processHako(id, image);
         break;
       case 'SHIMAU_STEP1_HAKO':
-        result = processShimauStep1(id);
+        result = processShimauStep1(id, image);
         break;
       case 'SHIMAU_STEP2_HUKURO':
-        result = processShimauStep2(id, hakoPageId);
+        result = processShimauStep2(id, hakoPageId, image);
         break;
       default:
         throw new Error(`Invalid mode: ${mode}`);
@@ -286,24 +286,30 @@ function updatePageWithUploadedFile(pageId, fileUploadId) {
 
 
 // --- メイン処理 ---
-function processHukuro(id) {
+function processHukuro(id, imageBase64) {
   const page = findOrCreatePage(getDbId('HUKURO'), '袋ID', id, '商品名', '新規登録パーツ');
+  processImageUpload(page.id, imageBase64);
+  
   return { 
     message: `袋「${page.properties['商品名'].rich_text[0].plain_text}」を開きます`,
     notionUrl: page.url.replace("https://", "notion://") // Notionアプリで開く
   };
 }
 
-function processHako(id) {
+function processHako(id, imageBase64) {
   const page = findOrCreatePage(getDbId('HAKO'), '箱ID', id, '箱名', '新しい箱');
+  processImageUpload(page.id, imageBase64);
+
   return { 
     message: `箱「${page.properties['箱名'].rich_text[0].plain_text}」を開きます`,
     notionUrl: page.url.replace("https://", "notion://")
   };
 }
 
-function processShimauStep1(id) {
+function processShimauStep1(id, imageBase64) {
   const page = findOrCreatePage(getDbId('HAKO'), '箱ID', id, '箱名', '新しい箱');
+  processImageUpload(page.id, imageBase64);
+
   return { 
     message: '箱を選択しました。次に袋をスキャンしてください。',
     pageId: page.id,
@@ -311,11 +317,14 @@ function processShimauStep1(id) {
   };
 }
 
-function processShimauStep2(hukuroId, hakoPageId) {
+function processShimauStep2(hukuroId, hakoPageId, imageBase64) {
   if (!hakoPageId) throw new Error('箱が選択されていません');
   
   const hukuroPage = findOrCreatePage(getDbId('HUKURO'), '袋ID', hukuroId, '商品名', '新規登録パーツ');
   updateHukuroLocation(hukuroPage.id, hakoPageId);
+  
+  // 袋の写真を更新する（箱にしまうタイミングでの袋の状態を記録）
+  processImageUpload(hukuroPage.id, imageBase64);
   
   // 更新後の箱の情報を取得して返す
   const hakoPage = getPageById(hakoPageId);
@@ -324,6 +333,25 @@ function processShimauStep2(hukuroId, hakoPageId) {
     message: '紐付け完了！箱のページを開きます。',
     notionUrl: hakoPage.url.replace("https://", "notion://")
   };
+}
+
+// --- 共通ヘルパー関数 ---
+function processImageUpload(pageId, imageBase64) {
+  if (!imageBase64) return;
+
+  try {
+    const blob = createBlobFromBase64(imageBase64);
+    performNotionUpload(pageId, blob);
+  } catch (e) {
+    console.error(`Image upload failed:`, e);
+    // 画像アップロード失敗はメイン処理を中断させない
+  }
+}
+
+function createBlobFromBase64(base64Data) {
+  const data = base64Data.split(',')[1] || base64Data;
+  const decoded = Utilities.base64Decode(data);
+  return Utilities.newBlob(decoded, 'image/jpeg', 'scanImage.jpg');
 }
 
 // --- Notion API ラッパー関数 ---
