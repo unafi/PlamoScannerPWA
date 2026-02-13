@@ -14,7 +14,6 @@ function doGet(e) {
 }
 
 // 【重要】初回はこの関数を選択して「実行」し、Google Driveへのアクセス権限を承認してください
-// 【重要】初回はこの関数を選択して「実行」し、Google Driveへのアクセス権限を承認してください
 function authorizeScript() {
   const folderId = PropertiesService.getScriptProperties().getProperty('FOLDER_ID_PHOTOS');
   console.log(`Current Folder ID: ${folderId}`);
@@ -29,16 +28,69 @@ function authorizeScript() {
   console.log("Drive full access authorized. You can now deploy.");
 }
 
-// 単体テスト用関数: この関数を実行して、Driveへの保存と公開設定の権限を確認してください
-function testSaveImage() {
-  // 1x1 pixel red dot base64
-  const dummyImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
-  
+// Notion File Upload API の存在確認用テスト
+function testNotionUploadEndpoint() {
+  const url = 'https://api.notion.com/v1/file_uploads';
+  const payload = {
+    file: {
+      name: "test_upload_check.jpg",
+      type: "image/jpeg"
+    }
+  };
+  const options = {
+    method: 'post',
+    headers: getNotionHeaders(),
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true // エラーレスポンスも確認したい
+  };
+
   try {
-    const url = saveImageToDrive(dummyImage, "TEST_MANUAL_RUN");
-    console.log("Success! File URL: " + url);
+    const res = UrlFetchApp.fetch(url, options);
+    console.log(`Status Code: ${res.getResponseCode()}`);
+    console.log(`Response: ${res.getContentText()}`);
   } catch (e) {
-    console.error("Test failed: " + e.message);
+    console.error(e);
+  }
+}
+
+// Step 2 検証用: ハードコードされた値でNotionの「写真」プロパティを更新する
+function testUpdateNotionPhotoProperty() {
+  const targetHakoId = "2026/02/11 12:50:34.044";
+  const targetImageName = "TEST_UPLOAD_1770968503152.jpg";
+
+  console.log(`Testing Notion Update... HakoID: ${targetHakoId}, Image: ${targetImageName}`);
+
+  try {
+    // 1. 画像URLの取得
+    const folderId = PropertiesService.getScriptProperties().getProperty('FOLDER_ID_PHOTOS');
+    const folder = DriveApp.getFolderById(folderId);
+    const files = folder.getFilesByName(targetImageName);
+    
+    if (!files.hasNext()) {
+      throw new Error(`Image file not found in Drive: ${targetImageName}`);
+    }
+    const file = files.next();
+    // 念のため公開設定を再適用
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    
+    // Notionに直接アップロード ("Notion as Master")
+    // 画像のBlobを取得するだけなので、標準のDriveAppでOK
+    const imageBlob = file.getBlob(); 
+    console.log(`Image Blob acquired: ${imageBlob.getName()} (${imageBlob.getBytes().length} bytes)`);
+
+    // 2. Notionページの特定
+    const dbId = PropertiesService.getScriptProperties().getProperty('DATABASE_ID_HAKO');
+    const page = findOrCreatePage(dbId, '箱ID', targetHakoId, '箱名', 'Test Hako Box');
+    console.log(`Notion Page Found: ${page.id} (${page.url})`);
+
+    // 3. アップロード＆更新実行
+    const res = performNotionUpload(page.id, imageBlob);
+    console.log("Process Result:", res);
+
+
+  } catch (e) {
+    console.error("Test Failed:", e.message);
+    if (e.stack) console.error(e.stack);
   }
 }
 
@@ -123,13 +175,115 @@ function saveImageToDrive(base64Data, fileNamePrefix) {
     // 公開設定 (リンクを知っている人全員が閲覧可)
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
     
-    // 直リンク用のURLを取得
-    return file.getDownloadUrl();
+    // Notion等の外部サービスでサムネイル表示させるには、Drive API (Advanced Service) から取得できる
+    // thumbnailLink が最も確実です (DriveAppでは取得不可)
+    // ※この機能を使うにはGASエディタで「Drive API」サービスを追加する必要があります
+    const driveFile = Drive.Files.get(file.getId(), { fields: "thumbnailLink, webContentLink" });
+    
+    // thumbnailLinkは小さいことがあるため、サイズ指定を置き換えて大きな画像を取得できるようにするハック
+    // (通常は s220 などを s1000 に置換)
+    const thumbnailLink = driveFile.thumbnailLink.replace(/=s\d+$/, "=s1000");
+
+    console.log(`Thumbnail URL acquired: ${thumbnailLink}`);
+    return thumbnailLink;
   } catch (e) {
     console.error('Failed to save image to Drive:', e);
     throw new Error(`Image save failed: ${e.message}`);
   }
 }
+
+// --- Notion API: 写真プロパティ更新（＆カバー画像設定） ---
+// --- Notion API: 写真プロパティ更新（＆カバー画像設定） ---
+// 【改修版】Google DriveではなくNotionに直接画像をアップロードする
+function performNotionUpload(pageId, imageBlob) {
+  try {
+    // Step 1: Uploadセッションの作成
+    const initUrl = 'https://api.notion.com/v1/file_uploads';
+    const initPayload = {
+      file: {
+        name: imageBlob.getName() || "uploaded_image.jpg",
+        type: imageBlob.getContentType() || "image/jpeg"
+      }
+    };
+    const initOptions = {
+      method: 'post',
+      headers: getNotionHeaders(),
+      payload: JSON.stringify(initPayload)
+    };
+    const initRes = UrlFetchApp.fetch(initUrl, initOptions);
+    const initData = JSON.parse(initRes.getContentText());
+    
+    const uploadUrl = initData.upload_url;
+    const fileId = initData.id;
+    console.log(`Upload Session Created: ${fileId}`);
+
+    // Step 2: 画像データの送信
+    // GASのUrlFetchAppはpayloadにBlobを渡すと自動的にマルチパート/form-dataになるが、
+    // Notionのこのエンドポイントがバイナリ直接かマルチパートかを判別する必要あり。
+    // 一般的なアップロードAPIの慣例として、fileキーで渡すことを試みる。
+    const uploadPayload = {
+      file: imageBlob
+    };
+    const uploadOptions = {
+      method: 'post',
+      headers: {
+        'Authorization': 'Bearer ' + PropertiesService.getScriptProperties().getProperty('NOTION_API_KEY'),
+        'Notion-Version': '2022-06-28'
+        // Content-Typeは指定しない (GASが境界を設定するため)
+      },
+      payload: uploadPayload
+    };
+    
+    const uploadRes = UrlFetchApp.fetch(uploadUrl, uploadOptions);
+    console.log(`Image content uploaded: ${uploadRes.getResponseCode()}`);
+
+    // Step 3: ページへの紐付け (プロパティ更新)
+    updatePageWithUploadedFile(pageId, fileId);
+    
+    return "Upload & Attach Success";
+
+  } catch (e) {
+    console.error("Notion Upload Error:", e);
+    throw e;
+  }
+}
+
+
+function updatePageWithUploadedFile(pageId, fileUploadId) {
+  const url = `https://api.notion.com/v1/pages/${pageId}`;
+  
+  const payload = {
+    // 1. カバー画像はスマホの表示領域を圧迫するため設定しない
+    // cover: { ... },
+    
+    // 2. 写真プロパティの更新
+    properties: {
+      '写真': { 
+        files: [
+          {
+            type: "file_upload",
+            file_upload: {
+              id: fileUploadId
+            },
+            name: "Uploaded Image"
+          }
+        ]
+      }
+    }
+  };
+  
+  const options = {
+    method: 'patch',
+    headers: getNotionHeaders(),
+    payload: JSON.stringify(payload)
+  };
+  
+  const res = UrlFetchApp.fetch(url, options);
+  console.log("Page property updated with file_upload");
+  return JSON.parse(res.getContentText());
+}
+
+
 
 // --- メイン処理 ---
 function processHukuro(id) {
