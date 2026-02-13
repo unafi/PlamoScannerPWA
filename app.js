@@ -61,6 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // 撮影ボタン・中止ボタン
+    const shutterBtn = document.getElementById('shutter-btn');
+    const cameraCancelBtn = document.getElementById('camera-cancel-btn');
+    const cameraControls = document.getElementById('camera-controls');
+    const capturedPreview = document.getElementById('captured-preview');
+    const previewImg = document.getElementById('preview-img');
+    const uploadTestBtn = document.getElementById('upload-test-btn');
+
     // UIを初期状態（スキャン前）に戻す関数
     function resetUI() {
         currentMode = '';
@@ -68,6 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
         hakoScanBtn.classList.remove('active');
         shimauBtn.classList.remove('active');
         statusMessageEl.textContent = 'ボタンを押してスキャンを開始してください';
+
+        // カメラUIとプレビューを隠す
+        cameraControls.classList.add('hidden');
+        capturedPreview.classList.add('hidden');
+        scanImage = null;
+        previewImg.src = '';
     }
 
     // --- スキャナ制御 ---
@@ -135,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
         startScanner();
     });
 
-
     // --- スキャンコールバック ---
     const onScanSuccess = (decodedText, decodedResult) => {
         if (lockScan) return;
@@ -193,12 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- 撮影機能 ---
-    const shutterBtn = document.getElementById('shutter-btn');
-    const cameraControls = document.getElementById('camera-controls');
-    const capturedPreview = document.getElementById('captured-preview');
-    const previewImg = document.getElementById('preview-img');
-    const uploadTestBtn = document.getElementById('upload-test-btn');
+    // 中止ボタン
+    cameraCancelBtn.addEventListener('click', () => {
+        stopScanner();
+        resetUI();
+    });
 
     // 撮影ボタン
     shutterBtn.addEventListener('click', () => {
