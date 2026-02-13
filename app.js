@@ -79,7 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await html5QrCode.start(
-                { facingMode: "environment" }, //背面カメラ
+                {
+                    facingMode: "environment",
+                    focusMode: "continuous", // オートフォーカス（対応端末のみ）
+                    advanced: [{ focusMode: "continuous" }]
+                },
                 {
                     fps: 10,
                     qrbox: (viewfinderWidth, viewfinderHeight) => {
