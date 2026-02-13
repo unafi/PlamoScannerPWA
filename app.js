@@ -12,6 +12,11 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 定数と設定 ---
+    const GAS_WEB_APP_URL = 'REPLACE_ME_GAS_URL'; //【要設定】Google Apps ScriptのデプロイURL(github secretsで置換)
+
+    // --- 状態管理 ---
+    let currentMode = ''; // HUKURO_SCAN, HAKO_SCAN, SHIMAU_STEP1_HAKO, SHIMAU_STEP2_HUKURO
     let selectedHakoInfo = null; // { id: '...', name: '...' }
     let isScanning = false;
     let lockScan = false;
@@ -62,11 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
         hakoScanBtn.classList.remove('active');
         shimauBtn.classList.remove('active');
         statusMessageEl.textContent = 'ボタンを押してスキャンを開始してください';
-
-        // 画像キャプチャ状態のリセット
-        capturedImageBlob = null;
-        capturedPreview.classList.add('hidden');
-        previewImg.src = "";
     }
 
     // --- スキャナ制御 ---
@@ -194,60 +194,78 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 撮影機能 ---
     const shutterBtn = document.getElementById('shutter-btn');
-    const cancelBtn = document.getElementById('cancel-btn'); // 追加
     const cameraControls = document.getElementById('camera-controls');
     const capturedPreview = document.getElementById('captured-preview');
     const previewImg = document.getElementById('preview-img');
-    // uploadTestBtnは削除済み
-
+    const uploadTestBtn = document.getElementById('upload-test-btn');
     let capturedImageBlob = null; // Base64 string
 
     // 撮影ボタン
     shutterBtn.addEventListener('click', () => {
-        // html5-qrcodeのビデオ要素を取得
+        // html5-qrcodeのビデオ要素を取得を試みる（環境によって異なるIDや構成に対応）
         let videoEl = document.querySelector('#qr-reader video');
         if (!videoEl) {
+            // 見つからない場合のフォールバック: 一般的なIDで探す
             videoEl = document.getElementById('html5-qrcode-video');
         }
 
         if (!videoEl) {
-            console.error('Video element not found.');
+            console.error('Video element not found. Current DOM:', document.getElementById('qr-reader') ? document.getElementById('qr-reader').innerHTML : 'No qr-reader element');
+            alert('カメラ映像が見つかりません。スキャンが開始されているか確認してください。');
             return;
         }
 
-        // 正方形にクロップするための計算
-        // 短い方の辺に合わせて正方形サイズを決定
-        const size = Math.min(videoEl.videoWidth, videoEl.videoHeight);
-        const startX = (videoEl.videoWidth - size) / 2;
-        const startY = (videoEl.videoHeight - size) / 2;
-
         const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
+        canvas.width = videoEl.videoWidth;
+        canvas.height = videoEl.videoHeight;
 
         // サイズが0の場合はまだロードされていない
         if (canvas.width === 0 || canvas.height === 0) {
+            alert('カメラ映像のサイズが取得できません。');
             return;
         }
 
         const ctx = canvas.getContext('2d');
-        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-        ctx.drawImage(videoEl, startX, startY, size, size, 0, 0, size, size);
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
 
         capturedImageBlob = canvas.toDataURL('image/jpeg', 0.8);
         previewImg.src = capturedImageBlob;
         capturedPreview.classList.remove('hidden');
 
-        // ボタンのフィードバック
-        const originalText = shutterBtn.innerHTML;
         shutterBtn.textContent = '保存しました！';
-        setTimeout(() => { shutterBtn.innerHTML = originalText; }, 1000);
+        setTimeout(() => { shutterBtn.textContent = '📷 撮影'; }, 1000);
     });
 
-    // 中止ボタン
-    cancelBtn.addEventListener('click', () => {
-        stopScanner();
-        resetUI();
+    // アップロードテストボタン (Step 1検証用)
+    uploadTestBtn.addEventListener('click', async () => {
+        if (!capturedImageBlob) return;
+        statusMessageEl.textContent = 'アップロードテスト中...';
+
+        try {
+            const response = await fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    mode: 'UPLOAD_ONLY',
+                    image: capturedImageBlob
+                })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const result = await response.json();
+            if (result.error) throw new Error(result.error);
+
+            statusMessageEl.textContent = `成功: ${result.message}`;
+            console.log('Upload Result:', result);
+            alert(`アップロード成功！\nURL: ${result.imageUrl}`);
+
+        } catch (err) {
+            console.error('Upload failed:', err);
+            statusMessageEl.textContent = `エラー: ${err.message}`;
+            alert(`アップロード失敗: ${err.message}`);
+        }
     });
 
     // --- バックエンド連携 ---
@@ -257,8 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const requestBody = {
             mode: currentMode,
             id: id,
-            hakoPageId: selectedHakoInfo?.pageId || null,
-            image: capturedImageBlob // 撮影データがあれば送信
+            hakoPageId: selectedHakoInfo?.pageId || null
         };
 
         try {
@@ -285,16 +302,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 次のステップへ
             if (currentMode === 'SHIMAU_STEP1_HAKO') {
-                // 箱にしまうモードの場合、ステップ1(箱スキャン)なら画像をクリアして次へ
                 currentMode = 'SHIMAU_STEP2_HUKURO';
                 selectedHakoInfo = { pageId: result.pageId, name: result.name };
-
-                // 画像はリセットするが、スキャナは止めずに次の案内へ (ただしstartScanner呼ぶと再起動かかるのでUI更新のみ)
-                capturedImageBlob = null;
-                capturedPreview.classList.add('hidden');
-
                 updateUI();
-                startScanner();
+                startScanner(); // 次のスキャンを促す
             } else {
                 // Notionアプリを開く
                 if (result.notionUrl) {
@@ -311,8 +322,5 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // 初期UI設定
-    // resetUIに画像クリア処理を追加するため、元のresetUI関数をオーバーライド的に修正する必要がありますが
-    // ここでは replace_file_content の範囲外にある resetUI 定義自体を修正するのがベストです。
-    // 今回は範囲指定が広範囲なので、下記修正を適用します。
-
+    resetUI();
 });

@@ -116,9 +116,7 @@ main {
 
 /* スキャナエリア */
 #scanner-container {
-    width: 100%;
-    /* 正方形を維持 (横幅いっぱいに対して高さも同じに) */
-    aspect-ratio: 1 / 1;
+    flex-grow: 1;
     background-color: #000;
     border-radius: 8px;
     position: relative;
@@ -126,14 +124,11 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
 }
 
 #qr-reader {
     width: 100%;
     height: 100%;
-    /* html5-qrcodeのビデオが親要素に合わせてカバーするように調整 */
-    object-fit: cover;
 }
 
 #scanner-message {
@@ -154,7 +149,6 @@ main {
     background-color: rgba(255, 255, 255, 0.8);
     opacity: 0;
     transition: opacity 0.1s;
-    pointer-events: none;
 }
 
 #scanner-overlay.flash {
@@ -162,7 +156,7 @@ main {
 }
 
 .hidden {
-    display: none !important;
+    display: none;
 }
 
 
@@ -176,7 +170,7 @@ footer {
 
 /* 撮影ボタン・プレビュー */
 #camera-controls {
-    margin-top: 0;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -184,50 +178,15 @@ footer {
     width: 100%;
 }
 
-.camera-btn-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-}
-
-/* 「撮影」ボタン: 他のモードボタンと同じスタイル (薄グレー背景、黒文字) */
 .camera-btn {
-    flex: 2;
-    /* 幅広 */
-    background-color: #e9ecef;
-    color: #495057;
+    background-color: #e74c3c;
+    /* Red */
+    color: white;
     font-weight: bold;
-    font-size: 1rem;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    /* アイコンとテキストの位置調整 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-
-/* 「中止」ボタン: 他のボタンと同じデザイン (薄グレー背景、黒文字) */
-.cancel-btn {
-    flex: 1;
-    /* 幅狭 */
-    background-color: #6c757d;
-    /* Slightly darker gray for cancel, or match others */
-    /* User requested: "Same as other buttons (gray bg, black text)" so using e9ecef like .control-btn */
-    background-color: #e9ecef;
-    color: #495057;
-    font-weight: bold;
-    font-size: 1rem;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.cancel-btn:active {
-    background-color: #dbe2e8;
+    font-size: 1.1rem;
+    padding: 15px;
+    width: 80%;
+    max-width: 300px;
 }
 
 #captured-preview {
@@ -236,15 +195,13 @@ footer {
     border-radius: 8px;
     text-align: center;
     color: white;
-    width: 100%;
-    box-sizing: border-box;
+    width: 80%;
+    max-width: 300px;
 }
 
 #preview-img {
-    width: 100%;
-    /* プレビューも正方形に */
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
     border: 2px solid #fff;
     margin-top: 5px;
     display: block;
