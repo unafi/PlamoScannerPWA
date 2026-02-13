@@ -215,30 +215,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // const canvas = document.createElement('canvas');
-        // canvas.width = videoEl.videoWidth;
-        // canvas.height = videoEl.videoHeight;
-
-        // // サイズが0の場合はまだロードされていない
-        // if (canvas.width === 0 || canvas.height === 0) {
-        //     alert('カメラ映像のサイズが取得できません。');
-        //     return;
-        // }
-
-        // const ctx = canvas.getContext('2d');
-        // ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-
-        // 短辺に合わせて正方形のサイズを決定
+        // 正方形のサイズ（短辺基準）
         const size = Math.min(videoEl.videoWidth, videoEl.videoHeight);
-        const startX = (videoEl.videoWidth - size) / 2;
-        const startY = (videoEl.videoHeight - size) / 2;
+
         const canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
-
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(videoEl, startX, startY, size, size, 0, 0, size, size);
+        // 画像の中心を基準に描画するために、Canvasの中心に原点を移動
+        ctx.translate(size / 2, size / 2);
+        // videoのサイズ比率を計算（アスペクト比維持のため）
+        // オブジェクトフィット: cover の挙動をCanvasで模倣します
+        const scale = Math.max(size / videoEl.videoWidth, size / videoEl.videoHeight);
 
+        // スケール変換と中心合わせ
+        const w = videoEl.videoWidth * scale;
+        const h = videoEl.videoHeight * scale;
+
+        // 中心位置に描画
+        ctx.drawImage(videoEl, -w / 2, -h / 2, w, h);
         scanImage = canvas.toDataURL('image/jpeg', 0.8);
         previewImg.src = scanImage;
         capturedPreview.classList.remove('hidden');
