@@ -11,7 +11,7 @@ iOS/Androidなどのスマートフォンブラウザで動作し、QRコード�
 4. Notionにレコード追加され、箱のレコードが開く（Notionアプリ導入済みの前提）
 5. Notionアプリで開いたデータを修正。箱の名前とか、袋に入れたモノの写真とか。
 
-<img src="画面イメージ.png" width="300" alt="画面イメージ" style="border: 1px solid black;">
+<kbd><img src="画面イメージ.png" width="300" alt="画面イメージ" style="border: 2px solid black;"></kbd>
 
 ## 主な技術スタック
 
