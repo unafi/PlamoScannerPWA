@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await html5QrCode.start(
-                { facingMode: "environment", aspectRatio: 1.0 }, //背面カメラ・正方形比率推奨
+                { facingMode: "environment" }, //背面カメラ
                 {
                     fps: 10,
                     qrbox: (viewfinderWidth, viewfinderHeight) => {
@@ -215,19 +215,29 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const canvas = document.createElement('canvas');
-        canvas.width = videoEl.videoWidth;
-        canvas.height = videoEl.videoHeight;
+        // const canvas = document.createElement('canvas');
+        // canvas.width = videoEl.videoWidth;
+        // canvas.height = videoEl.videoHeight;
 
-        // サイズが0の場合はまだロードされていない
-        if (canvas.width === 0 || canvas.height === 0) {
-            alert('カメラ映像のサイズが取得できません。');
-            return;
-        }
+        // // サイズが0の場合はまだロードされていない
+        // if (canvas.width === 0 || canvas.height === 0) {
+        //     alert('カメラ映像のサイズが取得できません。');
+        //     return;
+        // }
+
+        // const ctx = canvas.getContext('2d');
+        // ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+
+        // 短辺に合わせて正方形のサイズを決定
+        const size = Math.min(videoEl.videoWidth, videoEl.videoHeight);
+        const startX = (videoEl.videoWidth - size) / 2;
+        const startY = (videoEl.videoHeight - size) / 2;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
 
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-
+        ctx.drawImage(videoEl, startX, startY, size, size, 0, 0, size, size);
 
         scanImage = canvas.toDataURL('image/jpeg', 0.8);
         previewImg.src = scanImage;
