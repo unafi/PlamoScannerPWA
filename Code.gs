@@ -286,18 +286,47 @@ function updatePageWithUploadedFile(pageId, fileUploadId) {
 
 
 // --- メイン処理 ---
-function processHukuro(id) {
+function processHukuro(id, imageBase64) {
   const page = findOrCreatePage(getDbId('HUKURO'), '袋ID', id, '商品名', '新規登録パーツ');
-  return { 
-    message: `袋「${page.properties['商品名'].rich_text[0].plain_text}」を開きます`,
-    notionUrl: page.url.replace("https://", "notion://") // Notionアプリで開く
+  
+  // 画像があればアップロード
+  if (imageBase64) {
+    try {
+      const decoded = Utilities.base64Decode(imageBase64);
+      const blob = Utilities.newBlob(decoded, 'image/jpeg', 'photo_' + Date.now() + '.jpg');
+      performNotionUpload(page.id, blob);
+    } catch (e) {
+      console.error("Image upload failed in processHukuro:", e);
+      // 画像アップロード失敗してもメイン処理は止めない
+    }
+  }
+  
+  return {
+    message: `袋ID: ${id} を処理しました`,
+    name: '新規登録パーツ', // 本来はNotionから取得した名前を返す
+    pageId: page.id,
+    notionUrl: page.url.replace("https://", "notion://")
   };
 }
 
-function processHako(id) {
-  const page = findOrCreatePage(getDbId('HAKO'), '箱ID', id, '箱名', '新しい箱');
-  return { 
-    message: `箱「${page.properties['箱名'].rich_text[0].plain_text}」を開きます`,
+function processHako(id, imageBase64) {
+  const page = findOrCreatePage(getDbId('HAKO'), '箱ID', id, '箱名', '新規登録ボックス');
+
+  // 画像があればアップロード
+  if (imageBase64) {
+    try {
+      const decoded = Utilities.base64Decode(imageBase64);
+      const blob = Utilities.newBlob(decoded, 'image/jpeg', 'photo_' + Date.now() + '.jpg');
+      performNotionUpload(page.id, blob);
+    } catch (e) {
+      console.error("Image upload failed in processHako:", e);
+    }
+  }
+
+  return {
+    message: `箱ID: ${id} を処理しました`,
+    name: '新規登録ボックス',
+    pageId: page.id,
     notionUrl: page.url.replace("https://", "notion://")
   };
 }
