@@ -3,12 +3,43 @@
 // DATABASE_ID_HUKURO: 袋マスターDBのID
 // DATABASE_ID_HAKO: 箱マスターDBのID
 // FOLDER_ID_PHOTOS: 写真保存用Google DriveフォルダID
+// Force Scope Refresh
+
 
 function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
     status: "ok",
     message: "GAS is running correctly. Access permission is valid."
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 【重要】初回はこの関数を選択して「実行」し、Google Driveへのアクセス権限を承認してください
+// 【重要】初回はこの関数を選択して「実行」し、Google Driveへのアクセス権限を承認してください
+function authorizeScript() {
+  const folderId = PropertiesService.getScriptProperties().getProperty('FOLDER_ID_PHOTOS');
+  console.log(`Current Folder ID: ${folderId}`);
+  
+  // 権限を強制的にトリガーするためのダミー書き込み処理
+  // もしここで「承認が必要です」が出たら、必ず許可してください
+  const folder = DriveApp.getFolderById(folderId);
+  const tempFile = folder.createFile("auth_test.txt", "This is a permission test file.");
+  console.log("File created successfully: " + tempFile.getUrl());
+  tempFile.setTrashed(true); // すぐにゴミ箱へ
+  
+  console.log("Drive full access authorized. You can now deploy.");
+}
+
+// 単体テスト用関数: この関数を実行して、Driveへの保存と公開設定の権限を確認してください
+function testSaveImage() {
+  // 1x1 pixel red dot base64
+  const dummyImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  
+  try {
+    const url = saveImageToDrive(dummyImage, "TEST_MANUAL_RUN");
+    console.log("Success! File URL: " + url);
+  } catch (e) {
+    console.error("Test failed: " + e.message);
+  }
 }
 
 function doPost(e) {
