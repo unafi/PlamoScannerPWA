@@ -187,16 +187,7 @@ footer {
     width: 100%;
 }
 
-.camera-btn {
-    background-color: #e74c3c;
-    /* Red */
-    color: white;
-    font-weight: bold;
-    font-size: 1.1rem;
-    padding: 15px;
-    width: 80%;
-    max-width: 300px;
-}
+
 
 #captured-preview {
     background: #333;

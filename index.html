@@ -41,27 +41,29 @@
                 </div>
             </div>
 
-            <!-- 撮影機能エリア -->
             <div id="camera-controls" class="hidden">
-                <button id="shutter-btn" class="control-btn camera-btn">📷 撮影</button>
+                <div class="mode-selector" style="width: 100%;">
+                    <button id="shutter-btn" class="mode-btn">📷 撮影</button>
+                    <button id="camera-cancel-btn" class="mode-btn">中止</button>
+                </div>
                 <div id="captured-preview" class="hidden">
                     <p>保存候補:</p>
                     <img id="preview-img" src="" alt="Captured">
                     <button id="upload-test-btn" class="control-btn"
-                        style="margin-top:5px; background:#28a745; color:white;">アップロードテスト</button>
+                        style="margin-top:5px; background:#28a745; color:white; display:none;">アップロードテスト</button>
                 </div>
             </div>
         </main>
 
         <footer>
-            <p>PWA Version 0.1.4</p>
+            <p>PWA Version 0.1.5</p>
         </footer>
     </div>
 
     <!-- QR Scanner Library -->
     <script src="html5-qrcode.min.js"></script>
     <!-- App Logic -->
-    <script src="app.js?v=0.1.4"></script>
+    <script src="app.js?v=0.1.5"></script>
 </body>
 
 </html>
