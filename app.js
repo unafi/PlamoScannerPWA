@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'SHIMAU_STEP2_HUKURO':
                 statusMessageEl.textContent = `箱\"${selectedHakoInfo?.name || ''}\"選択中。
-【2/2】袋をスキャンしてください。`;
+                【2/2】袋をスキャンしてください。`;
                 break;
         }
     };
@@ -202,14 +202,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 撮影ボタン
     shutterBtn.addEventListener('click', () => {
-        const videoEl = document.querySelector('#qr-reader video');
+        // html5-qrcodeのビデオ要素を取得を試みる（環境によって異なるIDや構成に対応）
+        let videoEl = document.querySelector('#qr-reader video');
         if (!videoEl) {
-            console.error('Video element not found');
+            // 見つからない場合のフォールバック: 一般的なIDで探す
+            videoEl = document.getElementById('html5-qrcode-video');
+        }
+
+        if (!videoEl) {
+            console.error('Video element not found. Current DOM:', document.getElementById('qr-reader') ? document.getElementById('qr-reader').innerHTML : 'No qr-reader element');
+            alert('カメラ映像が見つかりません。スキャンが開始されているか確認してください。');
             return;
         }
+
         const canvas = document.createElement('canvas');
         canvas.width = videoEl.videoWidth;
         canvas.height = videoEl.videoHeight;
+
+        // サイズが0の場合はまだロードされていない
+        if (canvas.width === 0 || canvas.height === 0) {
+            alert('カメラ映像のサイズが取得できません。');
+            return;
+        }
+
         const ctx = canvas.getContext('2d');
         ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
 
