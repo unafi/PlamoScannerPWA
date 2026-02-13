@@ -2,15 +2,43 @@
 // NOTION_API_KEY: Notionインテグレーションのシークレットキー
 // DATABASE_ID_HUKURO: 袋マスターDBのID
 // DATABASE_ID_HAKO: 箱マスターDBのID
+// FOLDER_ID_PHOTOS: 写真保存用Google DriveフォルダID
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({
+    status: "ok",
+    message: "GAS is running correctly. Access permission is valid."
+  })).setMimeType(ContentService.MimeType.JSON);
+}
 
 function doPost(e) {
   try {
-    const requestBody = JSON.parse(e.postData.contents);
-    const { mode, id, hakoPageId } = requestBody;
+    // ログ出力: デバッグ用
+    console.log("Request received");
+
+    if (!e || !e.postData || !e.postData.contents) {
+      throw new Error("No postData received");
+    }
+
+    let requestBody;
+    try {
+      requestBody = JSON.parse(e.postData.contents);
+    } catch (parseError) {
+      console.error("JSON Parse Error:", parseError);
+      throw new Error("Invalid JSON body");
+    }
+
+    const { mode, id, hakoPageId, image } = requestBody;
+    console.log(`Mode: ${mode}, ID: ${id}`); // ログ確認用
 
     let result;
 
     switch (mode) {
+      case 'UPLOAD_ONLY': // Step 1: 画像アップロード単体テスト用
+        if (!image) throw new Error('No image data provided');
+        const imageUrl = saveImageToDrive(image, `TEST_UPLOAD`);
+        result = { message: 'Image uploaded successfully', imageUrl: imageUrl };
+        break;
       case 'HUKURO_SCAN':
         result = processHukuro(id);
         break;
@@ -24,7 +52,7 @@ function doPost(e) {
         result = processShimauStep2(id, hakoPageId);
         break;
       default:
-        throw new Error('Invalid mode');
+        throw new Error(`Invalid mode: ${mode}`);
     }
 
     return ContentService
@@ -32,9 +60,43 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
+    console.error("Error in doPost:", err); // エラーログ
     return ContentService
-      .createTextOutput(JSON.stringify({ error: err.message }))
+      .createTextOutput(JSON.stringify({ error: err.message, stack: err.stack }))
       .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// --- 画像処理 ---
+function saveImageToDrive(base64Data, fileNamePrefix) {
+  try {
+    const folderId = PropertiesService.getScriptProperties().getProperty('FOLDER_ID_PHOTOS');
+    if (!folderId) throw new Error('FOLDER_ID_PHOTOS is not set.');
+    
+    // data:image/jpeg;base64,..... を除去してデコード
+    const data = base64Data.split(',')[1] || base64Data; // ヘッダがない場合も考慮
+    const decoded = Utilities.base64Decode(data);
+    const blob = Utilities.newBlob(decoded, 'image/jpeg', `${fileNamePrefix}_${new Date().getTime()}.jpg`);
+    
+    // フォルダ取得 (なければルート)
+    let folder;
+    try {
+      folder = DriveApp.getFolderById(folderId);
+    } catch (e) {
+      // フォルダIDが無効な場合はエラーにするか、一時的にルートに保存するか。今回はエラー詳細を出す
+      throw new Error(`Invalid FOLDER_ID_PHOTOS: ${e.message}`);
+    }
+
+    const file = folder.createFile(blob);
+    
+    // 公開設定 (リンクを知っている人全員が閲覧可)
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    
+    // 直リンク用のURLを取得
+    return file.getDownloadUrl();
+  } catch (e) {
+    console.error('Failed to save image to Drive:', e);
+    throw new Error(`Image save failed: ${e.message}`);
   }
 }
 

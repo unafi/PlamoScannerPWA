@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isScanning) return;
         scannerMessage.classList.add('hidden');
         qrReaderEl.classList.remove('hidden');
+        cameraControls.classList.remove('hidden'); // カメラUI表示
 
         try {
             await html5QrCode.start(
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("QR Scanner failed to start.", err);
             scannerMessage.textContent = 'カメラスキャンを開始できません';
             scannerMessage.classList.remove('hidden');
+            cameraControls.classList.add('hidden');
         }
     };
 
@@ -104,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             qrReaderEl.classList.add('hidden');
             scannerMessage.textContent = 'ボタンを押してスキャン開始';
             scannerMessage.classList.remove('hidden');
+            cameraControls.classList.add('hidden'); // カメラUI非表示
         } catch (err) {
             console.error("QR Scanner failed to stop.", err);
         }
@@ -188,6 +191,67 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Beep error:', e);
         }
     };
+
+    // --- 撮影機能 ---
+    const shutterBtn = document.getElementById('shutter-btn');
+    const cameraControls = document.getElementById('camera-controls');
+    const capturedPreview = document.getElementById('captured-preview');
+    const previewImg = document.getElementById('preview-img');
+    const uploadTestBtn = document.getElementById('upload-test-btn');
+    let capturedImageBlob = null; // Base64 string
+
+    // 撮影ボタン
+    shutterBtn.addEventListener('click', () => {
+        const videoEl = document.querySelector('#qr-reader video');
+        if (!videoEl) {
+            console.error('Video element not found');
+            return;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = videoEl.videoWidth;
+        canvas.height = videoEl.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+
+        capturedImageBlob = canvas.toDataURL('image/jpeg', 0.8);
+        previewImg.src = capturedImageBlob;
+        capturedPreview.classList.remove('hidden');
+
+        shutterBtn.textContent = '保存しました！';
+        setTimeout(() => { shutterBtn.textContent = '📷 撮影'; }, 1000);
+    });
+
+    // アップロードテストボタン (Step 1検証用)
+    uploadTestBtn.addEventListener('click', async () => {
+        if (!capturedImageBlob) return;
+        statusMessageEl.textContent = 'アップロードテスト中...';
+
+        try {
+            const response = await fetch(GAS_WEB_APP_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    mode: 'UPLOAD_ONLY',
+                    image: capturedImageBlob
+                })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const result = await response.json();
+            if (result.error) throw new Error(result.error);
+
+            statusMessageEl.textContent = `成功: ${result.message}`;
+            console.log('Upload Result:', result);
+            alert(`アップロード成功！\nURL: ${result.imageUrl}`);
+
+        } catch (err) {
+            console.error('Upload failed:', err);
+            statusMessageEl.textContent = `エラー: ${err.message}`;
+            alert(`アップロード失敗: ${err.message}`);
+        }
+    });
 
     // --- バックエンド連携 ---
     const processScannedId = async (id) => {
