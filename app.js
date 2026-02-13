@@ -12,11 +12,6 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- 定数と設定 ---
-    const GAS_WEB_APP_URL = 'REPLACE_ME_GAS_URL'; //【要設定】Google Apps ScriptのデプロイURL(github secretsで置換)
-
-    // --- 状態管理 ---
-    let currentMode = ''; // HUKURO_SCAN, HAKO_SCAN, SHIMAU_STEP1_HAKO, SHIMAU_STEP2_HUKURO
     let selectedHakoInfo = null; // { id: '...', name: '...' }
     let isScanning = false;
     let lockScan = false;
